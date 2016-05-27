@@ -53,7 +53,7 @@ function getDefaultModules() {
         loader: 'url-loader?limit=8192'
       },
       {
-        test: /\.(mp4|ogg|svg)$/,
+        test: /\.(mp4|ogg|eot|ttf|svg)$/,
         loader: 'file-loader'
       }
     ]

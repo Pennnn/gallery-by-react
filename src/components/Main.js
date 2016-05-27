@@ -98,7 +98,8 @@ class AppComponent extends React.Component {
     }
     render() {
         //初始化图片
-        let imgFigures = [];
+        let imgFigures = [],
+            controllerUnits = [];
         imageDatas.forEach(function(value, index) {
             if (!this.state.imgsArrangeArr[index]) {
                 this.state.imgsArrangeArr[index] = {
@@ -113,13 +114,16 @@ class AppComponent extends React.Component {
             }
             imgFigures.push(<ImgFigure data={value} ref={'imgFigure' + index} key={index} arrange={this.state.imgsArrangeArr[index]}
             inverse={this.inverse(index)} center={this.center(index)}/>);
+            controllerUnits.push(<ControllerUnit arrange={this.state.imgsArrangeArr[index]} key={index}
+            inverse={this.inverse(index)} center={this.center(index)}></ControllerUnit>)
         }.bind(this));
         return (
             <section className="stage" ref="stage">
                 <section className="img-sec">
                     {imgFigures}
                 </section>
-                <nav classname="controller-nav">
+                <nav className="controller-nav">
+                    {controllerUnits}
                 </nav>
             </section>
         );
@@ -245,7 +249,7 @@ class ImgFigure extends React.Component {
         //设置旋转角度
         if (this.props.arrange.rotate) {
             (['msTransform', 'msTransform', 'WebkitTransform', '']).forEach(function(value) {
-                styleObj[value + 'transform'] = 'rotate( ' + this.props.arrange.rotate + 'deg)';
+                styleObj[value] = 'rotate( ' + this.props.arrange.rotate + 'deg)';
             }.bind(this));
         }
 
@@ -278,6 +282,40 @@ class ImgFigure extends React.Component {
      */
     handleClick(e) {
         console.log('click');
+        if (this.props.arrange.isCenter) {
+            this.props.inverse();
+        }else {
+            this.props.center();
+        }
+
+        e.stopPropagation();
+        e.preventDefault();
+    }
+}
+
+/* 控制组件 */
+class ControllerUnit extends React.Component {
+    render() {
+
+        var controllerUnitClassName = 'controller-unit';
+
+        if(this.props.arrange.isCenter) {
+            controllerUnitClassName += ' is-center';
+
+            if (this.props.arrange.isInverse) {
+                controllerUnitClassName += ' is-inverse';
+            }
+        }
+        //<i className="iconfont">&#xe602;</i>
+        return (
+            <span className={controllerUnitClassName} onClick={this.handleClick.bind(this)}>
+                <i className="iconfont zuoxuanzhuan"></i>
+            </span>
+        )
+    }
+
+    /*点击处理函数*/
+    handleClick(e) {
         if (this.props.arrange.isCenter) {
             this.props.inverse();
         }else {
